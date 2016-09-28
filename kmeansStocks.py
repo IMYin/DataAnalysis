@@ -33,7 +33,7 @@ for index in range(len(useFiles)):
     else:
         useFileTrue.pop(index)
 
-print("Now,we will analysis "+ str(len(stocks))+ " stocks data...")
+print("Now,we will analysis the data of "+ str(len(stocks))+ " stocks...")
 for _ in range(len(stocks)):
     change.append(np.sign(np.diff(stocks[_])))
     
