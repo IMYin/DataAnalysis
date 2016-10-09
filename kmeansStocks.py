@@ -11,8 +11,8 @@ import pandas as pd
 from scipy.cluster.vq import kmeans,vq
 import os,copy
 
-os.chdir('E:\\PythonWorkSpace\\data\\data\\data')
-path = 'E:\\PythonWorkSpace\\data\\data\\data'
+os.chdir('E:\\big_data\\TheRoadOfPython2016\\anocondaLearningSpace\\data')
+path = 'E:\\big_data\\TheRoadOfPython2016\\anocondaLearningSpace\\data'
 
 for root,dirs,files in os.walk(path):
     fileNames = files
