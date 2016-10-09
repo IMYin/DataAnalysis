@@ -2,7 +2,7 @@
 """
 Created on Sun Oct 09 13:22:42 2016
 
-@author: suntianxu
+@author: sunnyin
 """
 
 import tushare as ts
@@ -78,7 +78,7 @@ def Get_MACD(df):
                 operate = operate + 10#买入
     else:
         if df.iat[(dflen-1),14]<0:
-            if df.iat[(dflen-1),13]==df.iat[(dflen-2),14]:
+            if df.iat[(dflen-1),13]<=df.iat[(dflen-2),14]:
                 operate = operate - 10#卖出
        
     #3.DEA线与K线发生背离，行情反转信号。
@@ -124,14 +124,14 @@ def Get_KDJ(df):
     operate = 0
     #1.K线是快速确认线——数值在90以上为超买，数值在10以下为超卖；D大于80时，行情呈现超买现象。D小于20时，行情呈现超卖现象。
     if df.iat[(dflen-1),16]>=90:
-        operate = operate - 3
-    elif df.iat[(dflen-1),16]<=10:
         operate = operate + 3
+    elif df.iat[(dflen-1),16]<=10:
+        operate = operate - 3
        
     if df.iat[(dflen-1),17]>=80:
-        operate = operate - 3
-    elif df.iat[(dflen-1),17]<=20:
         operate = operate + 3
+    elif df.iat[(dflen-1),17]<=20:
+        operate = operate - 3
        
     #2.上涨趋势中，K值大于D值，K线向上突破D线时，为买进信号。#待修改
     if df.iat[(dflen-1),16]> df.iat[(dflen-1),17] and df.iat[(dflen-2),16]<=df.iat[(dflen-2),17]:
