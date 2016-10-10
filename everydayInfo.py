@@ -5,12 +5,12 @@ Created on Sat Oct 08 21:52:46 2016
 @author: Sunnyin
 """
 
-import tushare as ts
-#import pandas as pd
-#import matplotlib.pyplot as plt
-import matplotlib.mlab as mlab
+#import tushare as ts
+import numpy as np
 import talib as ta
+import matplotlib.mlab as mlab
 import os,datetime,operator
+
 
 
 
@@ -99,31 +99,40 @@ def get_kdj(sorted_data):
         if (slowkMA5[-1] >= slowkMA10[-1] and slowkMA10[-1] >= slowkMA20[-1]) or (slowdMA5[-1] >= slowdMA10[-1] and slowdMA10[-1] >= slowdMA20[-1]):
             operator += 1
     return operator
-    
-os.chdir('E:\\big_data\\TheRoadOfPython2016\\anocondaLearningSpace\\data_case')
 
-stocksList = {'JSY':'603369','LZLJ':'000568','JYGF':'002242','GLDQ':'000651','SJHB':'300072'}
-stocksList = sorted(stocksList.iteritems(),key=operator.itemgetter(1),reverse=True)
+path = 'E:\\big_data\\TheRoadOfPython2016\\anocondaLearningSpace\\data_base'
+os.chdir(path)
+for root,dirs,files in os.walk(path):
+    fileNames = files
 
-#format datetime
-today = datetime.date.today()
-before = 120
-days = datetime.timedelta(days = before)
-start = today -days
-ISOFORMAT = '%Y-%m-%d'
-end = today.strftime(ISOFORMAT)
-start = start.strftime(ISOFORMAT)
+#100 stocks were randomly selected.
+fileNum = np.random.random_integers(2897,size = 100)
+useFiles = []
+for i in fileNum:
+    useFiles.append(fileNames[i])
 
-stockFname = []
-for stock in stocksList:
-    ts.get_hist_data(stock[1]).to_csv(stock[0]+end+'.csv')
-    stockFname.append(stock[0]+end+'.csv')
-    
-for fname in stockFname:
+for fname in useFiles:
     r = mlab.csv2rec(fname)
-    macd_score = get_macd(r)
-    kdj_score = get_kdj(r)
-    print("the stock "+ fname + " macd score is :" + str(macd_score))
-    print("the stock "+ fname + " kdj score is :" + str(kdj_score))
+    if len(r) > 60:
+        macd_score = get_macd(r)
+        kdj_score = get_kdj(r)
+        sotck_name = fname.split('.')
+        print("the stock "+ sotck_name + " macd score is :" + str(macd_score))
+        print("the stock "+ sotck_name + " kdj score is :" + str(kdj_score))
+    else:
+        continue
+
+#stockFname = []
+#for stock in stocksList:
+#    data = ts.get_hist_data(stock[1]).sort_index()
+#    stockFname.append(stock[0]+end+'.csv')
+#    
+#    macd_score = get_macd(data)
+#    kdj_score = get_kdj(data)
+#    print("the stock "+ stock[0] + " macd score is :" + str(macd_score))
+#    print("the stock "+ stock[0] + " kdj score is :" + str(kdj_score))
+
 #    upperband, middleband, lowerband = ta.BBANDS(close, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
 #    t = range(len(close))
+
+

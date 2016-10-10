@@ -10,8 +10,13 @@ Created on Sat Oct 08 22:59:02 2016
 import tushare as ts
 import os
 
-os.chdir('E:\\big_data\\TheRoadOfPython2016\\anocondaLearningSpace\\stocksData')
-allData = ts.get_today_all()
-code = allData.code.values
-for stock in code:
-    ts.get_hist_data(stock).to_csv(stock +'.csv')
+os.chdir('E:\\big_data\\TheRoadOfPython2016\\anocondaLearningSpace\\data_base')
+x = 1
+stock_basics = ts.get_stock_basics()
+for code in stock_basics.index[2953:]:
+    print("the code is : " + str(code))
+    ts.get_hist_data(code,retry_count=10).to_csv(code +'.csv')
+    print("got the " + str(x) + " data...")
+    x += 1
+    
+    
