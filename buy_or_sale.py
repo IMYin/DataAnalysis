@@ -30,27 +30,25 @@ def get_macd(sorted_data):
     SignalMA20 = ta.MA(macdsignal, timeperiod=20, matype=0)
     #2个数组 1.DIFF、DEA均为正，DIFF向上突破DEA，买入信号。 2.DIFF、DEA均为负，DIFF向下跌破DEA，卖出信号。
     operator = ''
-#    score = 0
-    if macd[-1] > 0:
-        if macdsignal[-1] > 0:
-            if macd[-1] > macdsignal[-1] and macd[-2] <= macdsignal[-2]:
-                operator += 'B*'  #买入
-#                score += 10
-    else:
-        if macdsignal[-1] < 0:
-            if macd[-1] <= macdsignal[-2]:
+    if macd[-1] > 0 and macdsignal[-1] > 0:
+        if macd[-1] > macdsignal[-1] and macd[-2] <= macdsignal[-2]:
+                operator += 'B!'  #买入
+    elif macd[-1] < 0 and macdsignal[-1] < 0:
+        if macd[-1] <= macdsignal[-2]:
                 operator += 'S.'
-#                score -= 1
     #DEA线与k线发生背离，行情反转信号
     if ma5[-1] >= ma10[-1] and ma10[-1] >= ma20[-1]:  #k线上升
         if SignalMA5[-1] <= SignalMA10[-1] and SignalMA10[-1] <= SignalMA20[-1]:  #DEA下降
             operator += 'S.'
-#            score -= 1
     if ma5[-1] <= ma10[-1] and ma10[-1] <= ma20[-1]:  #k线下降
         if SignalMA5[-1] >= SignalMA10[-1] and SignalMA10[-1] >= SignalMA20[-1]:  #DEA上升
             operator += 'B.'
-#            score += 1
-            
+    if macd[-1] > 0 and macdhist[-1] >0:
+        if macd[-1] > macd[-2] and macdhist[-1] > macdhist[-2]:
+            operator += 'B!'
+    elif macd[-1] < 0 and macdhist[-1] < 0:
+        if macd[-1] < macd[-2] and macdhist[-1] > macdhist[-2]:
+            operator += 'S!'
     #分析MACD柱状图，由负变正，则买入信号
     if macdhist[-1] > 0:
         for i in range(1,7):
@@ -78,17 +76,19 @@ def get_kdj(sorted_data):
     
     #1.K线是快速确认线——数值在90以上为超买，数值在10以下为超卖；D大于80时，行情呈现超买现象。D小于20时，行情呈现超卖现象。
     if slowk[-1] >= 90:
-        if slowd[-1] >=80:
-            operator += 'S!'
+        operator += 'S@'
     elif slowk[-1] <= 10:
-        if slowd[-1] <= 20:
-            operator += 'B!'
+        operator += 'B@'
+    elif slowd[-1] >=80:
+        operator += 'S@'
+    elif slowd[-1] <= 20:
+        operator += 'B@'
 
      #2.上涨趋势中，K值大于D值，K线向上突破D线时，为买进信号
     if slowk[-1] > slowd[-1] and slowk[-2] <= slowd[-2]:
-        operator += 'B.'
+        operator += 'B#'
     elif slowk[-1] < slowd[-1] and slowk[-2] >= slowd[-2]:
-        operator += 'S.'
+        operator += 'S#'
         
      #3.当随机指标与股价出现背离时，一般为转势的信号。
     if ma5[-1] >= ma10[-1] and ma10[-1] >= ma20[-1]:  #k线上升
@@ -114,11 +114,13 @@ def get_bbands(sorted_data):
 #        score += 10
 
     #通过开口走向判别买入还是卖出
-    if (upperband[-1] - upperband[-2]) > (lowerband[-2] -lowerband[-1]):
-        operator += 'B#'
-#        score -= 5
-    elif (upperband[-1] - upperband[-2]) < (lowerband[-2] -lowerband[-1]):
-        operator += 'S#'
+    up = upperband[-1] - upperband[-2]
+    down = lowerband[-2] -lowerband[-1]
+    if up > 0 and down > 0:
+        if up > down:
+            operator += 'B#'
+        elif up < down:
+            operator += 'S#'
         
     if ma5[-1] > ma10[-1] and ma10[-1] > ma20[-1]:
         if upperband[-1] < upperband[-2]:
@@ -130,13 +132,13 @@ for root,dirs,files in os.walk(path):
     fileNames = files
 
 #100 stocks were randomly selected.
-fileNum = np.random.randint(1,2890,size=10)
+fileNum = np.random.randint(1,2934,size=30)
 useFiles = []
 for i in fileNum:
     useFiles.append(fileNames[i])
 
 for fname in useFiles:
-    r = mlab.csv2rec(fname)
+    r = mlab.csv2rec(fname).sort()
     if len(r) > 60:
         macd_score = get_macd(r)
         kdj_score = get_kdj(r)
