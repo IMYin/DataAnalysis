@@ -11,7 +11,7 @@ import tushare as ts
 import datetime,os
 
 
-path = 'E:\\big_data\\TheRoadOfPython2016\\anocondaLearningSpace\\data_case\\'
+path = 'E:\\big_data\\TheRoadOfPython2016\\anocondaLearningSpace\\data_base\\'
 os.chdir(path)
 #initial date
 today = datetime.date.today()
@@ -20,6 +20,13 @@ start = today.strftime(ISOFORMAT)
 
 for root,dirs,files in os.walk(path):
     fileNames = files
-    
+
+number = 0
 for name in fileNames:
-    ts.get_hist_data(name.split('.')[0],start=today).to_csv(name,mode='a+')
+    stock_data = ts.get_hist_data(name.split('.')[0],start=start)
+    if len(stock_data)> 0:
+        stock_data.to_csv(name,mode='a+',header=False)
+        number += 1
+    else:
+        print("This stock"+name.split('.')[0]+" is no trade today.")
+print(str(number)+" stocks data update completed.")
