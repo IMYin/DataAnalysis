@@ -11,12 +11,14 @@ import tushare as ts
 import os
 
 os.chdir('E:\\big_data\\TheRoadOfPython2016\\anocondaLearningSpace\\data_base')
-x = 1
+x = 0
 stock_basics = ts.get_stock_basics()
-for code in stock_basics.index[2953:]:
-    print("the code is : " + str(code))
-    ts.get_hist_data(code,retry_count=10).to_csv(code +'.csv')
-    print("got the " + str(x) + " data...")
-    x += 1
-    
+for code in stock_basics.index:
+    try:
+        ts.get_hist_data(code,retry_count=10).to_csv(code +'.csv')
+        print("got the " + str(x) + " data...")
+        x += 1
+    except Exception as e:
+        print(e.message)
+print(str(x) + ' stocks completed..')
     
