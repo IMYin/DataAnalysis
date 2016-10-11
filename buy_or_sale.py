@@ -32,10 +32,10 @@ def get_macd(sorted_data):
     operator = ''
     if macd[-1] > 0 and macdsignal[-1] > 0:
         if macd[-1] > macdsignal[-1] and macd[-2] <= macdsignal[-2]:
-                operator += 'B!'  #买入
+                operator += 'BX'  #买入
     elif macd[-1] < 0 and macdsignal[-1] < 0:
         if macd[-1] <= macdsignal[-2]:
-                operator += 'S.'
+                operator += 'SX'
     #DEA线与k线发生背离，行情反转信号
     if ma5[-1] >= ma10[-1] and ma10[-1] >= ma20[-1]:  #k线上升
         if SignalMA5[-1] <= SignalMA10[-1] and SignalMA10[-1] <= SignalMA20[-1]:  #DEA下降
@@ -132,13 +132,14 @@ for root,dirs,files in os.walk(path):
     fileNames = files
 
 #100 stocks were randomly selected.
-fileNum = np.random.randint(1,2934,size=30)
+fileNum = np.random.randint(1,2935,size=30)
 useFiles = []
 for i in fileNum:
     useFiles.append(fileNames[i])
 
 for fname in useFiles:
-    r = mlab.csv2rec(fname).sort()
+    r = mlab.csv2rec(fname)
+    r.sort()
     if len(r) > 60:
         macd_score = get_macd(r)
         kdj_score = get_kdj(r)
