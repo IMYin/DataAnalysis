@@ -5,18 +5,10 @@ Created on Tue Oct 11 20:16:45 2016
 @author: Sunnyin
 """
 
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 10 08:37:02 2016
-
-@author: sunnyin
-"""
-
 import tushare as ts
-import numpy as np
 import talib as ta
-import matplotlib.mlab as mlab
-import os
+#import matplotlib.mlab as mlab
+import sys
 #import operator
 
 def get_case_data(sorted_data):
@@ -133,16 +125,16 @@ def get_bbands(sorted_data):
         if upperband[-1] < upperband[-2]:
             operator += 'S.'
     return operator
-
-
-
-r = ts.get_hist_data('002506').sort_index()
-macd_score = get_macd(r)
-kdj_score = get_kdj(r)
-bbands_score = get_bbands(r)
-print("MACD--->  " + macd_score)
-print("KDJ--->  " + kdj_score)
-print("BBANDS---> "+ bbands_score)
+code = sys.argv[1]
+for c in code.split(','):
+    r = ts.get_hist_data(c).sort_index()
+    macd_score = get_macd(r)
+    kdj_score = get_kdj(r)
+    bbands_score = get_bbands(r)
+    print(c + ",MACD--->  " + macd_score)
+    print(c + ",KDJ--->  " + kdj_score)
+    print(c + ",BBANDS---> "+ bbands_score)
+    print('-'*50)
 
 #stockFname = []
 #for stock in stocksList:
