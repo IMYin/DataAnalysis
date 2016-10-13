@@ -138,15 +138,15 @@ for root,dirs,files in os.walk(path):
     fileNames = files
 
 #100 stocks were randomly selected.
-fileNum = np.random.randint(1,2935,size=200)
+fileNum = np.random.randint(1,2935,size=2000)
 useFiles = []
 for i in fileNum:
     useFiles.append(fileNames[i])
-
+number = 0
 for fname in useFiles:
     r = mlab.csv2rec(fname)
     r.sort()
-    if len(r) > 60 and r[-1].date.strftime(ISOFORMAT) == today:
+    if r[-1].date.strftime(ISOFORMAT) == today and len(r) > 60 :
         macd_score = get_macd(r)
         kdj_score = get_kdj(r)
         bbands_score = get_bbands(r)
@@ -162,6 +162,7 @@ for fname in useFiles:
             info.append(kdj_score)
             info.append(bbands_score)
             f = open(result_path+today+'.csv','a+')
+            number += 1
             try:
                 writer = csv.writer(f)
                 writer.writerow(info)
@@ -169,6 +170,12 @@ for fname in useFiles:
                 print("write file falsed.")
             finally:
                 f.close()
+#    else:
+#        print("this stock is not ")
+print("="*50)
+print("there are "+number+ " to choose.")
+print("plea chose one of the stock to buy or sale.")       
+print("="*50)        
 #stockFname = []
 #for stock in stocksList:
 #    data = ts.get_hist_data(stock[1]).sort_index()
