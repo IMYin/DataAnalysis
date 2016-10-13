@@ -126,7 +126,7 @@ def get_bbands(sorted_data):
     if ma5[-1] > ma10[-1] and ma10[-1] > ma20[-1]:
         if upperband[-1] < upperband[-2]:
             operator += 'S!'
-    return operator
+    return (operator,index_b)
 #initial the date
 ISOFORMAT = '%Y%m%d'
 today = datetime.date.today().strftime(ISOFORMAT)
@@ -149,18 +149,20 @@ for fname in useFiles:
     if r[-1].date.strftime(ISOFORMAT) == today and len(r) > 60 :
         macd_score = get_macd(r)
         kdj_score = get_kdj(r)
-        bbands_score = get_bbands(r)
+        bbands_score,index_b = get_bbands(r)
         stock_name = fname.split('.')[0]
         if len(macd_score) >=2 and len(kdj_score) >= 2 and len(bbands_score) >= 2:
             info = []
             print(stock_name + ",MACD--->  " + macd_score)
             print(stock_name + ",KDJ--->  " + kdj_score)
             print(stock_name + ",BBANDS---> "+ bbands_score)
+            print(stock_name + ",BBANDS---> "+ index_b)
             print('-'*50)
             info.append(stock_name)
             info.append(macd_score)
             info.append(kdj_score)
             info.append(bbands_score)
+            info.append(index_b)
             f = open(result_path+today+'.csv','a+')
             number += 1
             try:
@@ -173,7 +175,7 @@ for fname in useFiles:
 #    else:
 #        print("this stock is not ")
 print("="*50)
-print("there are "+number+ " to choose.")
+print("there are "+str(number)+ " to choose.")
 print("plea chose one of the stock to buy or sale.")       
 print("="*50)        
 #stockFname = []
