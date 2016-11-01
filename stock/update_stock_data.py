@@ -11,7 +11,7 @@ import tushare as ts
 import datetime,os
 
 
-path = 'E:\\big_data\\TheRoadOfPython2016\\anocondaLearningSpace\\data_base\\'
+path = '/home/sunnyin/myProject/data/stock' 
 os.chdir(path)
 #initial date
 today = datetime.date.today()
