@@ -75,12 +75,12 @@ pipeline = Pipeline([('clf',RandomForestClassifier())])
 
 parameters = {
     'clf__n_estimators': (200,150 , 130, 100),
-    'clf__max_depth': (130, 150, 180),
+    'clf__max_depth': (15,20, 10, 18),
     'clf__min_samples_split': (1, 2, 3),
     'clf__min_samples_leaf': (1, 2, 3),
     'clf__criterion'  :  ('gini','entropy')
 }
-grid_search = GridSearchCV(pipeline, parameters, n_jobs=-1, verbose=1, scoring='f1')
+grid_search = GridSearchCV(pipeline, parameters, n_jobs=-1, verbose=1, scoring='f1',cv=3)
 grid_search.fit(X_train, y_train)
 print('best score: %0.3f' % grid_search.best_score_)
 print('Best parameters set:')
